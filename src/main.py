@@ -14,6 +14,7 @@ from utils import get_response, find_tag
 
 
 def whats_new(session):
+    '''Парсер выдает информацию об обновлениях питона.'''
     whats_new_url = urljoin(MAIN_DOC_URL, 'whatsnew/')
     response = get_response(session, whats_new_url)
     if response is None:
@@ -43,6 +44,7 @@ def whats_new(session):
 
 
 def latest_versions(session):
+    '''Парсер выдает информацию о версиях и их статусе.'''
     response = get_response(session, MAIN_DOC_URL)
     if response is None:
         return
@@ -72,6 +74,7 @@ def latest_versions(session):
 
 
 def download(session):
+    '''Парсер скачивает архив питона в zip формате.'''
     downloads_url = urljoin(MAIN_DOC_URL, 'download.html')
     response = get_response(session, downloads_url)
     if response is None:
@@ -100,6 +103,7 @@ def download(session):
 
 
 def pep(session):
+    '''Парсер проверяем все статусы PEP и составляет таблицу с результатами.'''
     response = get_response(session, PEP_URL)
     if response is None:
         return
@@ -153,6 +157,7 @@ MODE_TO_FUNCTION = {
 
 
 def main():
+    '''Основная функция парсера.'''
     configure_logging()
     logging.info('Парсер запущен!')
     arg_parser = configure_argument_parser(MODE_TO_FUNCTION.keys())

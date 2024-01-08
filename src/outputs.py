@@ -4,28 +4,31 @@ import logging
 
 from prettytable import PrettyTable
 
-from constants import BASE_DIR, DATETIME_FORMAT
+from constants import (BASE_DIR,
+                       DATETIME_FORMAT,
+                       ARGUMENT_PRETTY,
+                       ARGUMENT_FILE,
+                       OUTPUT_DIR)
 
 
 def control_output(results, cli_args):
-    '''Обработка аргумента для вывода результата.'''
-    output = cli_args.output
-    if output == 'pretty':
-        pretty_output(results)
-    elif output == 'file':
-        file_output(results, cli_args)
-    else:
-        default_output(results)
+    """Обработка аргумента для вывода результата."""
+    output_functions = {
+        ARGUMENT_PRETTY: pretty_output,
+        ARGUMENT_FILE: file_output,
+    }
+    output_function = output_functions.get(cli_args.output, default_output)
+    output_function(results, cli_args)
 
 
-def default_output(results):
-    '''Выводл в терминал.'''
+def default_output(results, cli_args):
+    """Вывод в терминал."""
     for row in results:
         print(*row)
 
 
-def pretty_output(results):
-    '''Вывод в таблицу.'''
+def pretty_output(results, cli_args):
+    """Вывод в таблицу."""
     table = PrettyTable()
     table.field_names = results[0]
     table.align = 'l'
@@ -34,8 +37,8 @@ def pretty_output(results):
 
 
 def file_output(results, cli_args):
-    '''Выводл файлом.'''
-    results_dir = BASE_DIR / 'results'
+    """Вывод файлом."""
+    results_dir = BASE_DIR / OUTPUT_DIR
     results_dir.mkdir(exist_ok=True)
     parser_mode = cli_args.mode
     now = dt.datetime.now()

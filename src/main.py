@@ -2,7 +2,7 @@ import logging
 import re
 import requests_cache
 
-from collections import Counter
+from collections import Counter, defaultdict
 from outputs import control_output
 from urllib.parse import urljoin
 from tqdm import tqdm
@@ -95,7 +95,7 @@ def pep(session):
     table = find_tag(soup, 'section', attrs={'id': 'numerical-index'})
     tbody_tag = find_tag(table, 'tbody')
     tr_tag_list = tbody_tag.find_all('tr')
-    statuses_list = []
+    statuses_dict = defaultdict(int)
     for tr_tag in tr_tag_list:
         abbr_tag = find_tag(tr_tag, 'abbr')
         status_in_table = abbr_tag['title'].split()[-1]
@@ -120,12 +120,10 @@ def pep(session):
                     f'Статус в карточке: {status_page}   '
                     f'Статус в таблице: {status_in_table}'
                 )
-        statuses_list.append(status_page)
-
+        statuses_dict[status_page] += 1
     results = [('Cтатус', 'Количество')]
-    status_count = Counter(statuses_list)
-    total_statuses = sum(status_count.values())
-    for status, count in status_count.items():
+    total_statuses = sum(statuses_dict.values())
+    for status, count in statuses_dict.items():
         results.append((status, count))
     results.append(('Итого:', total_statuses))
     return results

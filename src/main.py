@@ -2,7 +2,7 @@ import logging
 import re
 import requests_cache
 
-from collections import Counter, defaultdict
+from collections import defaultdict
 from outputs import control_output
 from urllib.parse import urljoin
 from tqdm import tqdm

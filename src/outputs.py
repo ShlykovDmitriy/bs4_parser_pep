@@ -4,30 +4,17 @@ import logging
 
 from prettytable import PrettyTable
 
-from constants import (BASE_DIR,
-                       DATETIME_FORMAT,
-                       ARGUMENT_PRETTY,
-                       ARGUMENT_FILE,
-                       OUTPUT_DIR)
+from constants import (BASE_DIR, CHOICE_FOR_OUTPUT_FILE,
+                       CHOICE_FOR_OUTPUT_PRETTY, DATETIME_FORMAT, OUTPUT_DIR)
 
 
-def control_output(results, cli_args):
-    """Обработка аргумента для вывода результата."""
-    output_functions = {
-        ARGUMENT_PRETTY: pretty_output,
-        ARGUMENT_FILE: file_output,
-    }
-    output_function = output_functions.get(cli_args.output, default_output)
-    output_function(results, cli_args)
-
-
-def default_output(results, cli_args):
+def default_output(results, *args):
     """Вывод в терминал."""
     for row in results:
         print(*row)
 
 
-def pretty_output(results, cli_args):
+def pretty_output(results, *args):
     """Вывод в таблицу."""
     table = PrettyTable()
     table.field_names = results[0]
@@ -49,3 +36,16 @@ def file_output(results, cli_args):
         writer = csv.writer(f, dialect='unix')
         writer.writerows(results)
     logging.info(f'Файл с результатами был сохранён: {file_path}')
+
+
+OUTPUT_FUNCTIONS = {
+    CHOICE_FOR_OUTPUT_PRETTY: pretty_output,
+    CHOICE_FOR_OUTPUT_FILE: file_output,
+    None: default_output,
+}
+
+
+def control_output(results, cli_args):
+    """Обработка аргумента для вывода результата."""
+    output_function = OUTPUT_FUNCTIONS.get(cli_args.output)
+    output_function(results, cli_args)

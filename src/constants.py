@@ -10,11 +10,12 @@ LOG_DIR_NAME = 'logs'
 MAXBYTES_LOG_FILE = 10 ** 6
 BACKUPCOUNT_LOG_FILE = 5
 LOG_FILE_NAME = 'parser.log'
-ARGUMENT_PRETTY = 'pretty'
-ARGUMENT_FILE = 'file'
+CHOICE_FOR_OUTPUT_PRETTY = 'pretty'
+CHOICE_FOR_OUTPUT_FILE = 'file'
 OUTPUT_DIR = 'results'
 WHATS_NEW = 'whatsnew/'
 DOWNLOAD = 'download.html'
+DOWNLOAD_DIR_NAME = 'downloads'
 
 EXPECTED_STATUS = {
     'A': ('Active', 'Accepted'),

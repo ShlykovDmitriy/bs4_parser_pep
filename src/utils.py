@@ -12,9 +12,9 @@ def get_response(session, url, encoding='utf-8'):
         response = session.get(url)
         response.encoding = encoding
         return response
-    except RequestException:
+    except RequestException as e:
         logging.exception(
-            f'Возникла ошибка при загрузке страницы {url}',
+            f'Возникла ошибка при загрузке страницы {url}: {e}',
             stack_info=True
         )
 
@@ -22,10 +22,7 @@ def get_response(session, url, encoding='utf-8'):
 def get_soup(session, url):
     """Получение супа."""
     response = get_response(session, url)
-    if response is None:
-        return
-    soup = BeautifulSoup(response.text, features='lxml')
-    return soup
+    return BeautifulSoup(response.text, features='lxml')
 
 
 def find_tag(soup, tag, attrs=None):

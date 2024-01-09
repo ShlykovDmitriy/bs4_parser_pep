@@ -1,15 +1,16 @@
 import logging
 import re
-import requests_cache
-
 from collections import defaultdict
-from outputs import control_output
 from urllib.parse import urljoin
+
+import requests_cache
 from tqdm import tqdm
 
 from configs import configure_argument_parser, configure_logging
-from constants import BASE_DIR, MAIN_DOC_URL, PEP_URL, WHATS_NEW, DOWNLOAD
-from utils import get_response, find_tag, get_soup
+from constants import (BASE_DIR, DOWNLOAD, DOWNLOAD_DIR_NAME, MAIN_DOC_URL,
+                       PEP_URL, WHATS_NEW)
+from outputs import control_output
+from utils import find_tag, get_response, get_soup
 
 
 def whats_new(session):
@@ -77,7 +78,7 @@ def download(session):
     pdf_a4_link = pdf_a4_tag['href']
     archive_url = urljoin(downloads_url, pdf_a4_link)
     filename = archive_url.split('/')[-1]
-    downloads_dir = BASE_DIR / 'downloads'
+    downloads_dir = BASE_DIR / DOWNLOAD_DIR_NAME
     downloads_dir.mkdir(exist_ok=True)
     archive_path = downloads_dir / filename
     response = get_response(session, archive_url)
@@ -150,11 +151,9 @@ def main():
     parser_mode = args.mode
     try:
         results = MODE_TO_FUNCTION[parser_mode](session)
+        control_output(results, args)
     except Exception as e:
         logging.error(f'При вызове функции {parser_mode}, возникла ошибка {e}')
-        return
-    if results is not None:
-        control_output(results, args)
     logging.info('Парсер завершил работу.')
 
 
